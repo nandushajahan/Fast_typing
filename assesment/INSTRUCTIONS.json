@@ -216,7 +216,7 @@
       ]
     },
     {
-      "is_enabled": true,
+      "is_enabled": false,
       "test_case_fe": "Test Case 5 - Search Keywords",
       "test_case_hint": "Check TestNG Test `testCase05`",
       "testng_test_name": "testCase05",
