@@ -1,29 +1,30 @@
 package demo.wrappers;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.NoSuchElementException;
+import java.util.Date;
+import org.openqa.selenium.io.FileHandler;
+
 
 public class Wrappers {
-    /*
-     * Write your selenium wrappers here
-     */
+    
     public static void goToURLandWait(WebDriver driver)
         {
             try {
-                driver.get("https://www.youtube.com");
+                driver.get("https://www.livechat.com/typing-speed-test/#/");
             waitForPageLoad(driver);
             System.out.println("Page loaded successfully!");
+            Thread.sleep(3000);
             } catch (Exception e) {
-                // TODO: handle exception
+                
                 System.out.println("Could not complete Page load!");
             }
             
@@ -35,23 +36,26 @@ public class Wrappers {
                 ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete"));
     }
 
-    public static void clickUntilDisappears(WebElement elem, WebDriver driver)
-    {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        System.out.println("Scrolling to the right most movie");
-        while (true) {
-            try {
-                WebElement button = wait.until(ExpectedConditions.elementToBeClickable(elem));
-                button.click();
-                Thread.sleep(500); // Small delay to allow the UI to update
-            } catch (NoSuchElementException e) {
-                
-                break; // Exit loop if the button is no longer found
-            } catch (Exception e) {
-                System.out.println("reached at the end of scroll");
-                break; // Exit loop on any unexpected error
-                
+    public static void takeScreenshot(WebDriver driver, String fileName) {
+        try {
+            // Auto-create 'screenshots' folder if not exist
+            File dir = new File("screenshots");
+            if (!dir.exists()) {
+                dir.mkdir();
             }
+
+            // Add timestamp to file name automatically
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String finalName = "screenshots/" + fileName + "_" + timestamp + ".png";
+
+            File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            FileHandler.copy(srcFile, new File(finalName));
+            System.out.println("Screenshot saved: " + finalName);
+
+        } catch (IOException e) {
+            System.out.println("Failed to take screenshot: " + e.getMessage());
         }
     }
+
+    
 }
